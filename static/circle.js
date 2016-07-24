@@ -29,7 +29,7 @@ Circle.prototype.no = function() {
         circle.element.className += " shake";
         setTimeout(function() {
             circle.element.className = circle.element.className.replace(" shake", "");
-        }, 500);
+        }, 1000);
     }, 400);
 }
 
