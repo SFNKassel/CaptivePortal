@@ -3,12 +3,14 @@
     top: 1000px;
     transition: all 1s ease;
     height: 0px;
+    visibility: hidden;
 }
 
 .flyin_active {
     top: 0px;
+    height: 100px;
 }
 
 .flyin_visible {
-    height: 100px;
+    visibility: visible;
 }
