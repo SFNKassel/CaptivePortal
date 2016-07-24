@@ -26,7 +26,9 @@ function login() {
         if(xhttp.status == 202) {
             //authentication sucessfully
             hide("login");
-            circle.yes();
+            setTimeout(function() {
+                circle.yes();
+            }, 100);
             var name = xhttp.responseText;
             setTimeout(function() {
                 displayLogout(name);
