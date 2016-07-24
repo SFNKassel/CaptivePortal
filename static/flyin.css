@@ -1,0 +1,16 @@
+.flyin {
+    position: relative;
+    top: 1000px;
+    transition: all 1s ease;
+    display: none;
+    height: 0;
+}
+
+.flyin_active {
+    top: 0px;
+}
+
+.flyin_visible {
+    display: block;
+    height: auto;
+}

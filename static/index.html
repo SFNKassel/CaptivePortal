@@ -4,24 +4,38 @@
         <title>SFN Login</title>
         
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!--including stuff-->
+        <!--including css-->
         <link rel="stylesheet" type="text/css" href="style.css">
+        
+        <!--including CryptoJS-->
         <script type="text/javascript" src="core.js"></script>
         <script type="text/javascript" src="md5.js"></script>
+        
+        <!--including CircleJS-->
+        <script type="text/javascript" src="circle.js"></script>
+        <link rel="stylesheet" type="text/css" href="circle.css">
+        
+        <!--including FlyinJS-->
+        <script type="text/javascript" src="circle.js"></script>
+        <link rel="stylesheet" type="text/css" href="flyin.css">
+        
+        <!--including other js-->
         <script type="text/javascript" src="colorHash.js"></script>
+        <script type="text/javascript" src="xhttp.js"></script>
+        <script type="text/javascript" src="flyin.js"></script>
         <script type="text/javascript" src="main.js"></script>
     </head>
     <body onload="onReady();">
         <div id="container">
             <div id="circle"></div>
-                <form id="login" onsubmit="return login()">
+                <form id="login" class="flyin" onsubmit="return login()">
                     <input type="text" id="username" name="user" placeholder="Benutzername" onkeydown="updateCircle()" onkeyup="updateCircle()">
                     <input type="password" id="password" name="passwd" placeholder="Passwort" onkeydown="updateCircle()" onkeyup="updateCircle()">
-                    <input type="submit" id="submit" value="Anmelden">
+                    <input type="submit" class="submit" value="Anmelden">
                 </form>
-                <form id="logout" onsubmit="return logout()">
+                <form id="logout" class="flyin" onsubmit="return logout()">
                     <span id="greeting">Hallo, <b id="name"></b></span>
-                    <input type="submit" id="submit" value="Abmelden">
+                    <input type="submit" class="submit" id="logout_button" value="Abmelden">
                 </form>
         </div>
     </body>

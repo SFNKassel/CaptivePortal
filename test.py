@@ -1,6 +1,6 @@
 from flask import Flask, request, send_from_directory
-import testAuth as auth
-import netUtil as nu
+import auth_test as auth
+import ip2mac as nu
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def api():
         ip = request.remote_addr
         user = request.args.get("user")
         passwd = request.args.get("passwd")
-        mac = nu.mac_for_ip(ip)
+        mac = nu.lookup(ip)
     except(Exception):
         print(Exception)
 
@@ -33,7 +33,7 @@ def api():
     if(!user and !passwd):
         #return state
 
-    name = auth.test(user, passwd)
+    name = auth.check_credentials(user, passwd)
     if(name):
         return name, 202
     else:

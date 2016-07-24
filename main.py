@@ -1,60 +1,65 @@
-from flask import Flask, request, send_from_directory
-import testAuth as auth
-import netUtil as nu
-import fileUtils as fu
+from flask import Flask, request
+import auth_test as auth
+import ip2mac
+import login_manager as l
 
 app = Flask(__name__)
-users = {}
 
+
+# make development easier and disable browser-cache
 @app.after_request
 def add_header(response):
     response.headers["Cache-Control"] = "public, max-age=0"
     return response
 
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html'), "511 network authentication required"
+
 
 @app.route('/<path:path>')
 def static_file(path):
     return app.send_static_file(path)
 
+
 @app.route('/api/login')
-def api():
-    try:
-        ip = request.remote_addr
-        user = request.args.get("user")
-        passwd = request.args.get("passwd")
-        mac = nu.mac_for_ip(ip)
-    except(Exception):
-        print(Exception)
-        #do nothing, something was not set
+def login():
+    user = request.args.get("user")
+    passwd = request.args.get("passwd")
 
-    print(ip)
-    print(mac)
-    print(user)
-    print(passwd)
+    if not user or not passwd:
+        return "username or password missing!", 400
 
-    if(not user and not passwd):
-        print("state check")
-
-    if(auth.test(user, passwd)):
-        name = auth.getName(user)
-        users[ip] = user
-        fu.writeFile("users", users)
-        return name, 202
+    if auth.check_credentials(user, passwd):
+        mac = ip2mac.lookup(request.remote_addr)
+        l.login(user, mac)
+        name = auth.get_name(user)
+        return '{"user": "%s", "name": "%s"}' % (user, name), 202
     else:
-        return "wrong username or password", "401"
+        return "wrong username or password", 401
+
 
 @app.route('/api/logout')
 def logout():
     try:
-        del users[request.remote_addr]
-        fu.writeFile("users", users)
-        return "logged out sucessfully", 202
-    except(KeyError):
+        mac = ip2mac.lookup(request.remote_addr)
+        l.logout(mac)
+        return "logged out successfully", 202
+    except KeyError:
         return "you are not logged in", 400
 
+
+@app.route('/api/state')
+def state():
+    mac = ip2mac.lookup(request.remote_addr)
+    user = l.get_user(mac)
+    name = auth.get_name(user)
+    if user:
+        return '{"user": "%s", "name": "%s"}' % (user, name), 200
+    else:
+        return "you are not logged in", 511
+
+
 if __name__ == "__main__":
-    app.run(host = "0.0.0.0")
-    users = fu.readFile("users")
+    app.run(host="0.0.0.0")

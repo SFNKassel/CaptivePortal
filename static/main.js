@@ -1,74 +1,89 @@
+/*
+* This is the main file of the JS foo
+*/
+
+var circle;
+
+//first do some init stuff
 function onReady() {
-    document.getElementById('username').focus();
-}
-
-var firstrun = true;
-function error() {
-    setTimeout(function() {
-            document.getElementById("circle").style.backgroundColor = "#ff0000";
-    }, 100);
-    setTimeout(function() {
-        document.getElementById("circle").className = " shake";
-        setTimeout(function() {
-            document.getElementById("circle").className = "";
-        }, 500);
-    }, 400);
-    document.getElementById("password").value = "";
-    document.getElementById("password").focus();
-}
-
-function ok(name) {
-    var before = document.getElementById("circle").style.backgroundColor;
-    document.getElementById("circle").style.backgroundColor = "#00ff00";
-    document.getElementById("login").style.display = "none";
-    document.getElementById("name").innerHTML = name;
-    document.getElementById("logout").style.display = "block";
+    circle = new Circle("circle");
     
-    setTimeout(function() {
-        document.getElementById("logout").style.top = "0px";
-    }, 1000);
-    
-    setTimeout(function() {
-        document.getElementById("circle").style.backgroundColor = before;
-    }, 2000);
-}
-
-function login() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4) {
-        if(xhttp.status == 202) {
-            ok(xhttp.responseText);
-            //user authenticated
-        } else if(xhttp.status == 200) {
-            //user already authenticated
+    readState(function(name) {
+        if(name != false) {
+            displayLogout(name);
         } else {
-            //user have to be authenticated
-            error();
+            displayLogin();
         }
-    }
-  };
-  xhttp.open("GET", "api/login?user=" + document.getElementById("username").value + "&passwd=" + document.getElementById("password").value, true);
-  xhttp.send();
+    });
+}
+
+//now the comunication functions
+function login() {
+    var user = document.getElementById("username").value;
+    var passwd = document.getElementById("password").value;
+    
+    request("api/login?user=" + user + "&passwd=" + passwd, function(xhttp) {
+        if(xhttp.status == 202) {
+            //authentication sucessfully
+            hide("login");
+            circle.yes();
+            var name = xhttp.responseText;
+            setTimeout(function() {
+                displayLogout(name);
+            }, 2000);
+        } else {
+            //next try :(
+            circle.no();
+            newTry();
+        }
+    });
   return false; //for not reloading the page
 }
 
 function logout() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4) {
-        if(xhttp.status == 202) {
-            ok(xhttp.responseText);
-            //user authenticated
-        } else if(xhttp.status == 200) {
-            //user already authenticated
-        } else {
-            //user have to be authenticated
-            error();
-        }
-    }
-  };
-  xhttp.open("GET", "api/logout", true);
-  xhttp.send();
+  request("api/logout", function(xhttp) {
+      //nothing to do here
+      displayLogin();
+  });
   return false; //for not reloading the page
+}
+
+
+function readState(callback) {
+    request("api/state", function(xhttp) {
+        if(xhttp.status == 200) {
+            var name = xhttp.responseText;
+            callback(name);
+        } else {
+            callback(false);
+        }
+    });
+}
+
+//and finally the style modifying functions
+function displayLogin() {
+    hide("logout");
+    display("login");
+    circle.setColor("rgb(212, 29, 140)");
+    
+    setTimeout(function(){
+        document.getElementById("username").focus();
+    }, 1100);
+}
+
+function newTry() {
+    document.getElementById("password").value = "";
+    document.getElementById("password").focus();
+}
+
+function displayLogout(name) {
+    name = JSON.parse(name);
+    document.getElementById("name").innerHTML = name.name;
+    circle.setColor(stringToColor(name.user));
+    
+    hide("login");
+    display("logout");
+    setTimeout(function(){
+        document.getElementById("logout_button").focus();
+    }, 1100);
 }
