@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from flask import Flask, request
 import auth_test as auth
 import ip2mac

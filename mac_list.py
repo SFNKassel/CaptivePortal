@@ -1,9 +1,13 @@
 def read_file(filename):
     dictionary = {}
-    f = open(filename, "r")
-    for line in f:
-        dictionary[line.split("#")[0]] = line.split("#")[1].strip()
-    f.close()
+    try:
+        f = open(filename, "r")
+    except FileNotFoundError:
+        open(filename, "w").close()
+        f = open(filename, "r")
+        for line in f:
+            dictionary[line.split("#")[0]] = line.split("#")[1].strip()
+            f.close()
     return dictionary
 
 
