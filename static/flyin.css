@@ -2,8 +2,7 @@
     position: relative;
     top: 1000px;
     transition: all 1s ease;
-    display: none;
-    height: 0;
+    height: 0px;
 }
 
 .flyin_active {
@@ -11,6 +10,5 @@
 }
 
 .flyin_visible {
-    display: block;
-    height: auto;
+    height: 100px;
 }
