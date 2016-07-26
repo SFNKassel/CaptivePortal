@@ -8,7 +8,7 @@ LOG_FILE = "log"
 # initialize the users list and add ldap rules for existing users
 users = Users_List(USERS_FILE)
 for mac in users:
-    iptables.add_mac()
+    iptables.add_mac(mac)
 
 # initialize the logger
 l = Logger(LOG_FILE)
