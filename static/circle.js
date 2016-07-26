@@ -34,6 +34,5 @@ Circle.prototype.no = function() {
 }
 
 Circle.prototype.yes = function() {
-    //TODO: make more emotion
     this.setColor("#00ff00")
 }
