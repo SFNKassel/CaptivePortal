@@ -1,10 +1,10 @@
 #!/usr/bin/env python2
 from flask import Flask, request, redirect
-import auth #auth_test as auth
+import auth  # auth_test as auth
 import ip2mac
 import login_manager as l
-import os
 from multiprocessing import Process
+import iptables
 
 app = Flask(__name__)
 
@@ -25,6 +25,7 @@ def index():
 def static_file(path):
     return app.send_static_file(path)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return index()
@@ -40,8 +41,8 @@ def login():
 
     if auth.check_credentials(user, passwd):
         mac = ip2mac.lookup(request.remote_addr)
-	if(not mac):
-		return "not in network", 500
+        if (not mac):
+            return "not in network", 500
         l.login(user, mac)
         name = auth.get_name(user)
         return '{"user": "%s", "name": "%s"}' % (user, name), 202
@@ -69,16 +70,11 @@ def state():
     else:
         return "you are not logged in", 511
 
-def launch_https():
-    app.run(host="0.0.0.0", port=5001, ssl_context='adhoc')
-    
-
 
 if __name__ == "__main__":
-    os.system("iptables -I INPUT -p tcp -m tcp --dport 5000 -j ACCEPT")
-    os.system("iptables -I INPUT -p tcp -m tcp --dport 5001 -j ACCEPT")
-    os.system("iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to 192.168.1.1:5000")
-    os.system("iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.1.1:5001")
+    # first install some iptables rules (and remove old ones)
+    iptables.init_iptables()
 
-    Process(target=launch_https).start()
+    # then start the server with http and https versions
+    Process(target=lambda: app.run(host="0.0.0.0", port=5001, ssl_context='adhoc')).start()
     app.run(host="0.0.0.0", port=5000)

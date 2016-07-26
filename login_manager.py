@@ -1,33 +1,39 @@
-import mac_list
-import time
-import os
+from logger import Logger
+from users_list import Users_List
+import iptables
 
-ACTIVE_FILE = "users"
+USERS_FILE = "users"
 LOG_FILE = "log"
 
-users = mac_list.read_file("users")
+# initialize the users list and add ldap rules for existing users
+users = Users_List(USERS_FILE)
 for mac in users:
-    os.system("iptables -t nat -I PREROUTING -p tcp -m mac --mac-source %s --dport 80 -j ACCEPT" % mac)
-    os.system("iptables -t nat -I PREROUTING -p tcp -m mac --mac-source %s --dport 443 -j ACCEPT" % mac)
-lf = open(LOG_FILE, "a")
+    iptables.add_mac()
+
+# initialize the logger
+l = Logger(LOG_FILE)
 
 
 def login(user, mac):
-    os.system("iptables -t nat -I PREROUTING -p tcp -m mac --mac-source %s --dport 80 -j ACCEPT" % mac)
-    os.system("iptables -t nat -I PREROUTING -p tcp -m mac --mac-source %s --dport 443 -j ACCEPT" % mac)
+    # modify the iptables rule
+    iptables.add_mac(mac)
+
+    # modify persistent foo
     users[mac] = user
-    mac_list.write_file(ACTIVE_FILE, users)
-    lf.write("%.1f: %s logged in  @%s\n" % (time.time(), user, mac))
-    lf.flush()
+
+    # log the login
+    l.log("%s logged out @%s" % (users[mac], mac))
 
 
 def logout(mac):
-    os.system("iptables -t nat -D PREROUTING -p tcp -m mac --mac-source %s --dport 80 -j ACCEPT" % mac)
-    os.system("iptables -t nat -D PREROUTING -p tcp -m mac --mac-source %s --dport 443 -j ACCEPT" % mac)
-    lf.write("%.1f: %s logged out @%s\n" % (time.time(), users[mac], mac))
-    lf.flush()
+    # modify the iptables rule
+    iptables.remove_mac(mac)
+
+    # modify persistent foo
     del users[mac]
-    mac_list.write_file(ACTIVE_FILE, users)
+
+    # log the login
+    l.log("%s logged out @%s" % (users[mac], mac))
 
 
 def get_user(mac):
