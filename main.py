@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
-from flask import Flask, request
-import auth_test as auth
+#!/usr/bin/env python2
+from flask import Flask, request, redirect
+import auth #auth_test as auth
 import ip2mac
 import login_manager as l
+import os
+from multiprocessing import Process
 
 app = Flask(__name__)
 
@@ -23,6 +25,10 @@ def index():
 def static_file(path):
     return app.send_static_file(path)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return index()
+
 
 @app.route('/api/login')
 def login():
@@ -34,6 +40,8 @@ def login():
 
     if auth.check_credentials(user, passwd):
         mac = ip2mac.lookup(request.remote_addr)
+	if(not mac):
+		return "not in network", 500
         l.login(user, mac)
         name = auth.get_name(user)
         return '{"user": "%s", "name": "%s"}' % (user, name), 202
@@ -61,6 +69,16 @@ def state():
     else:
         return "you are not logged in", 511
 
+def launch_https():
+    app.run(host="0.0.0.0", port=5001, ssl_context='adhoc')
+    
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    os.system("iptables -I INPUT -p tcp -m tcp --dport 5000 -j ACCEPT")
+    os.system("iptables -I INPUT -p tcp -m tcp --dport 5001 -j ACCEPT")
+    os.system("iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to 192.168.1.1:5000")
+    os.system("iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.1.1:5001")
+
+    Process(target=launch_https).start()
+    app.run(host="0.0.0.0", port=5000)

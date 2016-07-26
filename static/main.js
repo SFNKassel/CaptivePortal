@@ -22,7 +22,7 @@ function login() {
     var user = document.getElementById("username").value;
     var passwd = document.getElementById("password").value;
     
-    request("api/login?user=" + user + "&passwd=" + passwd, function(xhttp) {
+    request("/api/login?user=" + user + "&passwd=" + passwd, function(xhttp) {
         if(xhttp.status == 202) {
             //authentication sucessfully
             hide("login");
@@ -30,6 +30,9 @@ function login() {
                 circle.yes();
             }, 100);
             var name = xhttp.responseText;
+            setTimeout(function() {
+                window.location.reload();
+            }, 1000);
             setTimeout(function() {
                 displayLogout(name);
             }, 2000);
@@ -43,7 +46,7 @@ function login() {
 }
 
 function logout() {
-  request("api/logout", function(xhttp) {
+  request("/api/logout", function(xhttp) {
       //nothing to do here
       displayLogin();
   });
@@ -52,7 +55,7 @@ function logout() {
 
 
 function readState(callback) {
-    request("api/state", function(xhttp) {
+    request("/api/state", function(xhttp) {
         if(xhttp.status == 200) {
             var name = xhttp.responseText;
             callback(name);
