@@ -28,7 +28,7 @@ def static_file(path):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return index()
+    return index()[0], 404
 
 
 @app.route('/api/login')

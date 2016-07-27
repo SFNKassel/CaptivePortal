@@ -16,7 +16,7 @@ def init_iptables():
 
 def add_mac(mac):
     remove_mac(mac)
-    os.system("iptables -t nat -I PREROUTING -p tcp -m mac --mac-source %s -j ACCEPT" % mac)
+    os.system("iptables -t nat -I PREROUTING 2 -p tcp -m mac --mac-source %s -j ACCEPT" % mac)
 
 
 def remove_mac(mac):
