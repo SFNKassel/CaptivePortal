@@ -18,7 +18,7 @@ def add_header(response):
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html'), "511 network authentication required"
+    return app.send_static_file('index.html')
 
 
 @app.route('/<path:path>')
@@ -28,7 +28,7 @@ def static_file(path):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return index()[0], 404
+    return index()
 
 
 @app.route('/api/login')
@@ -76,5 +76,5 @@ if __name__ == "__main__":
     iptables.init_iptables()
 
     # then start the server with http and https versions
-    Process(target=lambda: app.run(host="0.0.0.0", port=5001, ssl_context='adhoc')).start()
-    app.run(host="0.0.0.0", port=5000)
+    Process(target=lambda: app.run(host="0.0.0.0", port=5001, ssl_context='adhoc', threaded=True)).start()
+    app.run(host="0.0.0.0", port=5000, threaded=True)
