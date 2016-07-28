@@ -22,18 +22,18 @@ def login(user, mac):
     users[mac] = user
 
     # log the login
-    l.log("%s logged out @%s" % (users[mac], mac))
+    l.log("%s logged in @%s" % (users[mac], mac))
 
 
 def logout(mac):
     # modify the iptables rule
     iptables.remove_mac(mac)
 
-    # modify persistent foo
-    del users[mac]
-
     # log the login
     l.log("%s logged out @%s" % (users[mac], mac))
+
+    # modify persistent foo
+    del users[mac]
 
 
 def get_user(mac):
