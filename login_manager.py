@@ -2,8 +2,8 @@ from logger import Logger
 from users_list import Users_List
 import iptables
 
-USERS_FILE = "/home/Administrator/CaptivePortal/users"
-LOG_FILE = "/home/Administrator/CaptivePortal/log"
+USERS_FILE = "/etc/captive.users"
+LOG_FILE = "/var/log/captivePortal.log"
 
 # initialize the users list and add ldap rules for existing users
 users = Users_List(USERS_FILE)
