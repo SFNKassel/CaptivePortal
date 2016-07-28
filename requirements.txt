@@ -1,6 +1,3 @@
-binascii
-ldap
-netifaces
-time
+python-ldap
 flask
 isc_dhcp_leases
