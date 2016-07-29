@@ -12,6 +12,11 @@ function onReady() {
         if(name != false) {
             displayLogout(name);
         } else {
+            var user = document.URL.split("?user=")[1];
+            if(user) {
+                document.getElementById("username").value = user;
+                document.getElementById("password").focus();
+            }
             displayLogin();
         }
     });
