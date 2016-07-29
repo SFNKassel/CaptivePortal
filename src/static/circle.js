@@ -6,9 +6,9 @@ function Circle(id) {
     this.id = id;
     this.element = document.getElementById(id);
     
-    document.getElementById(id).className += " circle";
+    this.element.className += " circle";
     setTimeout(function() {
-        document.getElementById(id).className += " slow";
+        this.element.className += " slow";
     }, 10);
 }
 
