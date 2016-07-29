@@ -3,5 +3,5 @@ function stringToColor(str) {
 }
 
 function updateCircle() {
-    document.getElementById('circle').style.backgroundColor =  stringToColor(document.getElementById("username").value)
+    circle.setColor(stringToColor(document.getElementById("username").value))
 }

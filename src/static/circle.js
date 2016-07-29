@@ -24,7 +24,7 @@ Circle.prototype.no = function() {
     var circle = this;
     setTimeout(function() {
             circle.setColor("#ff0000");
-    }, 100);
+    }, 200);
     setTimeout(function() {
         circle.element.className += " shake";
         setTimeout(function() {
