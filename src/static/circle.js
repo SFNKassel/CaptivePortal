@@ -7,8 +7,9 @@ function Circle(id) {
     this.element = document.getElementById(id);
     
     this.element.className += " circle";
+    var that = this;
     setTimeout(function() {
-        this.element.className += " slow";
+        that.element.className += " slow";
     }, 10);
 }
 

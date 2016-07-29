@@ -13,10 +13,14 @@ function onReady() {
             displayLogout(name);
         } else {
             var user = document.URL.split("?user=")[1];
+            setTimeout(function() {
             if(user) {
                 document.getElementById("username").value = user;
                 document.getElementById("password").focus();
-            }
+                circle.setColor(stringToColor(user));
+            } else {
+                document.getElementById("username").focus();
+            }}, 700);
             displayLogin();
         }
     });
@@ -75,10 +79,6 @@ function displayLogin() {
     hide("logout");
     display("login");
     circle.setColor("rgb(212, 29, 140)");
-    
-    setTimeout(function(){
-        document.getElementById("username").focus();
-    }, 1100);
 }
 
 function newTry() {
@@ -90,10 +90,8 @@ function displayLogout(name) {
     name = JSON.parse(name);
     document.getElementById("name").innerHTML = name.name;
     circle.setColor(stringToColor(name.user));
-    
+    document.getElementById("login").focus();
+
     hide("login");
     display("logout");
-    setTimeout(function(){
-        document.getElementById("logout_button").focus();
-    }, 1100);
 }
