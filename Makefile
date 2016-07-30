@@ -7,3 +7,5 @@ install: depend
 	chmod 755 /usr/local/bin/captivePortal/main.py
 	install -o root -g root -m 755 captivePortal /etc/init.d/ 		
 	update-rc.d captivePortal defaults
+	service univention-firewall restart
+	service captivePortal restart

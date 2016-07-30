@@ -74,6 +74,7 @@ def state():
 if __name__ == "__main__":
     # first install some iptables rules (and remove old ones)
     iptables.init_iptables()
+    l.init()
 
     # then start the server with http and https versions
     Process(target=lambda: app.run(host="0.0.0.0", port=5001, ssl_context='adhoc', threaded=True)).start()
