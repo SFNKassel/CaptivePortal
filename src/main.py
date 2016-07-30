@@ -77,5 +77,5 @@ if __name__ == "__main__":
     l.init()
 
     # then start the server with http and https versions
-    Process(target=lambda: app.run(host="0.0.0.0", port=5001, ssl_context='adhoc', threaded=True)).start()
-    app.run(host="0.0.0.0", port=5000, threaded=True)
+    Process(target=lambda: app.run(host="192.168.1.1", port=5001, ssl_context='adhoc', threaded=True)).start()
+    app.run(host="192.168.1.1", port=5000, threaded=True)
