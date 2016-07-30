@@ -42,8 +42,8 @@ def init_iptables():
 # redirect the leftovers 
     os.system("iptables -t nat -D PREROUTING -p tcp -j DNAT --to 192.168.1.1:5000")
     os.system("iptables -t nat -A PREROUTING -p tcp -j DNAT --to 192.168.1.1:5000")
-    os.system("iptables -t nat -D PREROUTING -p udp -j DNAT --to 192.168.1.1:5000")
-    os.system("iptables -t nat -A PREROUTING -p udp -j DNAT --to 192.168.1.1:5000")
+    os.system("iptables -t nat -D PREROUTING -p udp -j DNAT --to 192.168.1.1:80")
+    os.system("iptables -t nat -A PREROUTING -p udp -j DNAT --to 192.168.1.1:80")
 
 
 def add_mac(mac):
