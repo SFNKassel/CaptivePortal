@@ -20,16 +20,20 @@ def init_iptables():
     os.system("iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to 192.168.1.1:5001")
 
 # dns
-    os.system("iptables -t nat -D PREROUTING -p tcp --dport 53 -j ACCEPT")
-    os.system("iptables -t nat -A PREROUTING -p tcp --dport 53 -j ACCEPT")
-    os.system("iptables -t nat -D PREROUTING -p udp --dport 53 -j ACCEPT")
-    os.system("iptables -t nat -A PREROUTING -p udp --dport 53 -j ACCEPT")
+    os.system("iptables -t nat -D PREROUTING -p tcp --dport 53 -j DNAT --to 192.168.1.1")
+    os.system("iptables -t nat -I PREROUTING 2 -p tcp --dport 53 -j DNAT --to 192.168.1.1")
+    os.system("iptables -t nat -D PREROUTING -p udp --dport 53 -j DNAT --to 192.168.1.1")
+    os.system("iptables -t nat -I PREROUTING 2 -p udp --dport 53 -j DNAT --to 192.168.1.1")
+#    os.system("iptables -t nat -D PREROUTING -p tcp --dport 53 -j ACCEPT")
+#    os.system("iptables -t nat -A PREROUTING -p tcp --dport 53 -j ACCEPT")
+#    os.system("iptables -t nat -D PREROUTING -p udp --dport 53 -j ACCEPT")
+#    os.system("iptables -t nat -A PREROUTING -p udp --dport 53 -j ACCEPT")
 
 # redirect all foreign dns server requests to our local dns server
-    os.system("iptables -t nat -D OUTPUT -p tcp --dport 53 -j DNAT --to 192.168.1.1:53")
-    os.system("iptables -t nat -I OUTPUT -p tcp --dport 53 -j DNAT --to 192.168.1.1:53")
-    os.system("iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to 192.168.1.1:53")
-    os.system("iptables -t nat -I OUTPUT -p udp --dport 53 -j DNAT --to 192.168.1.1:53")
+#    os.system("iptables -D FORWARD -p tcp --dport 53 -j DNAT --to 192.168.1.1:53")
+#    os.system("iptables -I FORWARD -p tcp --dport 53 -j DNAT --to 192.168.1.1:53")
+#    os.system("iptables -D FORWARD -p udp --dport 53 -j DNAT --to 192.168.1.1:53")
+#    os.system("iptables -I FORWARD -p udp --dport 53 -j DNAT --to 192.168.1.1:53")
 
 # ssh
     os.system("iptables -t nat -D PREROUTING -p tcp --dport 22 -j ACCEPT")
