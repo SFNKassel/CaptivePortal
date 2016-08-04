@@ -55,7 +55,7 @@ def logout():
     try:
         mac = ip2mac.lookup(request.remote_addr)
         l.logout(mac)
-        return "logged out successfully", 202
+        return "logged out successfully", 200
     except KeyError:
         return "you are not logged in", 400
 
